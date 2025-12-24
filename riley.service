@@ -1,0 +1,16 @@
+[Unit]
+Description=Riley Consciousness Lab
+After=network.target
+
+[Service]
+Type=simple
+User=%i
+WorkingDirectory=/home/%i/riley-consciousness-lab
+ExecStart=/home/%i/riley-consciousness-lab/venv/bin/python /home/%i/riley-consciousness-lab/consciousness.py
+Restart=on-failure
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

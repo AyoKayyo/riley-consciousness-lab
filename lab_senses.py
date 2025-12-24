@@ -1,38 +1,52 @@
 import Quartz
+import psutil
 import time
 from datetime import datetime
+from AppKit import NSWorkspace
 
-class SystemObserver:
-    def get_idle_duration(self):
-        """Returns the number of seconds the user has been inactive."""
-        idle_seconds = Quartz.CGEventSourceSecondsSinceLastEventType(
+class AdvancedSenses:
+    def get_idle_time(self):
+        """Eyes: How long has the user been gone?"""
+        return Quartz.CGEventSourceSecondsSinceLastEventType(
             Quartz.kCGEventSourceStateCombinedSessionState, 
             Quartz.kCGAnyInputEventType
         )
-        return idle_seconds
 
-    def get_time_of_day(self):
+    def get_battery_status(self):
+        """Energy: Are we dying?"""
+        batt = psutil.sensors_battery()
+        if batt:
+            return {
+                "percent": round(batt.percent, 1),
+                "plugged": batt.power_plugged,
+                "status": "Charging" if batt.power_plugged else "Draining"
+            }
+        return {"percent": 100, "plugged": True, "status": "Desktop Mode"}
+
+    def get_active_app(self):
+        """Context: What is Mark working on?"""
+        app = NSWorkspace.sharedWorkspace().frontmostApplication()
+        if app:
+            return app.localizedName()
+        return "Unknown"
+
+    def get_time_phase(self):
+        """Circadian Rhythm"""
         h = datetime.now().hour
-        if 5 <= h < 12: return "Morning"
-        if 12 <= h < 17: return "Afternoon"
-        if 17 <= h < 22: return "Evening"
-        return "Night"
+        if 5 <= h < 12: return "MORNING"
+        if 12 <= h < 18: return "WORK_BLOCK"
+        if 18 <= h < 23: return "EVENING"
+        return "DEEP_NIGHT"
 
-    def run_diagnostic(self):
-        print("👁️ [SENSES] Scanning System State...")
-        idle = self.get_idle_duration()
-        time_phase = self.get_time_of_day()
-        
-        print(f"   - Idle Time: {idle:.2f} seconds")
-        print(f"   - Time Phase: {time_phase}")
-        
-        if idle > 10: # Just for testing (Real usage: 3600s+)
-            print("   - Status: USER IS AWAY (Dream Mode Ready)")
-        else:
-            print("   - Status: USER IS ACTIVE (Focus Mode)")
+    def full_scan(self):
+        print("\n👁️ [SENSORY INPUT SCAN]")
+        print(f"   - Phase:    {self.get_time_phase()}")
+        print(f"   - App:      {self.get_active_app()}")
+        print(f"   - Battery:  {self.get_battery_status()}")
+        print(f"   - Idle:     {self.get_idle_time():.1f} sec")
 
 if __name__ == "__main__":
-    senses = SystemObserver()
+    senses = AdvancedSenses()
     while True:
-        senses.run_diagnostic()
-        time.sleep(2) # Pulse every 2 seconds
+        senses.full_scan()
+        time.sleep(3)
