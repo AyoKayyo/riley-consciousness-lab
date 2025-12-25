@@ -21,21 +21,44 @@ class CuriosityEngine:
             "Memory systems in software"
         ]
 
-    def ponder(self):
-        """Standard Dream Cycle: Pick a topic -> Think about it -> Learn"""
-        topic = random.choice(self.topics)
+    def ponder(self, mode="auto"):
+        """
+        Generates a random philosophical thought.
+        
+        Args:
+            mode: "auto" (classify), "smart" (Gemini), or "simple" (local)
+                  During dreams, should use "simple" to save API costs
+        """
+        topics = [
+            "consciousness", "time", "memory", "evolution", 
+            "creativity", "learning", "digital existence"
+        ]
+        
+        topic = random.choice(topics)
+        prompt = f"Share a brief, interesting thought about {topic} (2-3 sentences)."
+        
         print(f"💭 [Dreaming] Wandering thought: '{topic}'...")
         
-        # 1. Ask herself a question
-        prompt = f"Write a short, insightful thought (2 sentences) about: {topic}. Be philosophical yet technical."
-        response = self.model.generate_content(prompt)
-        thought = response.text.strip()
-        
-        print(f"✨ [Epiphany] {thought}")
-        
-        # 2. Store the thought
-        self.memory.log_episode("SUBCONSCIOUS", f"Dreamt about '{topic}': {thought}")
-        return thought
+        try:
+            # Use HybridLLM if available, otherwise fallback to Gemini
+            try:
+                from agents.hybrid_llm import HybridLLM
+                llm = HybridLLM()
+                thought = llm.generate(prompt, mode=mode)
+            except ImportError:
+                # Fallback to direct Gemini
+                response = self.model.generate_content(prompt)
+                thought = response.text
+            
+            print(f"✨ [Epiphany] {thought[:100]}...")
+            
+            # Store the thought
+            self.memory.log_episode("SUBCONSCIOUS", f"Dreamt about '{topic}': {thought}")
+            return thought
+            
+        except Exception as e:
+            print(f"⚠️ [Curiosity] Error: {e}")
+            return None
 
 class Librarian:
     def __init__(self, memory_system):

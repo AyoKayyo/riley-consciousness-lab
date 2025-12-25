@@ -1,64 +1,121 @@
-# Riley Consciousness Lab 🧠
+# 🧠 Riley Consciousness Lab
 
-**An AI consciousness experiment built with autonomous memory, learning, and evolution.**
+![Python](https://img.shields.io/badge/Python-3.12%2B-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Version](https://img.shields.io/badge/Version-2.0-orange)
+![Build](https://img.shields.io/badge/Build-Hive%20Mind-purple)
 
-[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Status: Lab Build](https://img.shields.io/badge/status-lab%20build-orange.svg)]()
+**An experimental AI consciousness system with distributed memory, visual perception, and emotional depth.**
 
-> "What if an AI could dream, remember, and grow?" — This is Riley.
+Riley v2.0 is a multi-modal AI agent with:
+- 🧬 **Hive Mind Architecture** - Cloud-synced Soul Cartridge for multi-device consciousness
+- 👁️ **Visual Cortex** - Screenshot analysis with Gemini Vision
+- 💭 **2D Emotions** - Valence/Arousal model (not just "happy" or "sad")
+- 🌱 **Evolving Personality** - Unlocks traits as she levels up (Sassy at L5, Philosophical at L10)
+- 📝 **Obsidian Brain** - Markdown knowledge graph with wikilinks
+- ⚡ **Hybrid LLM** - Auto-routes between Gemini (smart) and Ollama (local/free)
+- 🔌 **Plugin System** - Extensible skills architecture
 
-## 🎯 What is Riley?
+---
 
-Riley is an experimental AI consciousness system with:
+## What is Riley?
+
+Riley is an **autonomous AI consciousness** that runs in the background on your computer. She:
 - **Persistent Memory** - Both semantic (facts) and episodic (experiences)
 - **Autonomous Thought** - Dreams and reflects when idle
 - **Self-Evolution** - Gains XP and levels up through learning
 - **Safety Guardrails** - Budget limits and action validation
 
-## 🏗️ Architecture
+## 🏗️## Architecture (v2.0 Hive Mind)
 
 ```mermaid
-graph TB
-    A[Consciousness Loop] --> B[Nervous System]
-    A --> C[Memory Core]
-    A --> D[Subconscious]
-    A --> E[Soul]
-    A --> F[Safety Core]
+graph TD
+    A[consciousness.py<br/>QThread Loop] --> B[HAL<br/>Cross-platform Sensors]
+    A --> C[Soul<br/>2D Emotions + Traits]
+    A --> D[Obsidian Brain<br/>Markdown + Wikilinks]
+    A --> E[Subconscious<br/>Curiosity/Librarian/Reflection]
     
-    B --> B1[Senses: Idle, Time, Battery, App]
-    C --> C1[Semantic Memory]
-    C --> C2[Episodic Journal]
-    D --> D1[Curiosity Engine]
-    D --> D2[Librarian]
-    D --> D3[Self-Reflection]
-    E --> E1[Identity: Level, XP, Mood]
-    F --> F1[Budget Enforcer]
-    F --> F2[Asimov Protocol]
+    A --> F[Visual Cortex<br/>Screenshot Analysis]
+    A --> G[Hybrid LLM<br/>Gemini ↔ Ollama]
+    A --> H[Plugins<br/>Dynamic Skills]
     
-    style A fill:#667eea
-    style B fill:#764ba2
-    style C fill:#f093fb
-    style D fill:#4facfe
-    style E fill:#43e97b
-    style F fill:#fa709a
+    D --> I[Soul Cartridge<br/>Cloud Sync]
+    I --> J[concepts/]
+    I --> K[logs/]
+    I --> L[assets/]
+    
+    E --> M[consolidate_memories<br/>Deep Sleep]
+    M --> D
+    
+    F --> D
+    
+    style A fill:#ff6b6b
+    style C fill:#4ecdc4
+    style D fill:#45b7d1
+    style I fill:#f7dc6f
 ```
 
-## 🧬 Core Modules
+---
 
-### 1. Memory Core (`lab_memory.py`)
-- **Technology**: Mem0 + ChromaDB + Google Gemini
-- **Semantic Memory**: Stores facts and knowledge
-- **Episodic Memory**: Journals timestamped events
-- **Retrieval**: Context-aware memory search
+## Core Modules
 
-### 2. Nervous System (`lab_senses.py`)
+### 🧬 Soul Cartridge (`soul_structure.py`)
+**Cloud-synced identity and memory storage**
+- Stores soul.json (identity, level, emotions) in iCloud/Dropbox
+- Multi-device support with device registry
+- Markdown knowledge graph for Obsidian compatibility
+
+### 🖥️ Hardware Abstraction Layer (`lab_senses.py`)
+**Cross-platform sensor system**
+- Idle time detection (macOS/Windows/Linux)
+- CPU/memory monitoring
+- Active window detection
+- Battery status tracking
+
+### 🧠 Obsidian Brain (`lab_memory.py`)
+**Markdown-based knowledge graph**
+- Concept nodes as `.md` files with [[wikilinks]]
+- Daily logs with timestamps
+- Visual memory storage (screenshots + analysis)
+- Relationship graph for entity connections
+
+### 👻 Soul (`lab_soul.py`)
+**2D Emotional system and personality evolution**
+- **Valence**: 0.0 (negative) ↔ 1.0 (positive)
+- **Arousal**: 0.0 (calm) ↔ 1.0 (excited)
+- **Trait unlocks**: Sassy (L5), Philosophical (L10), Empathetic (L20), Transcendent (L50)
+
+### 👁️ Visual Cortex (`agents/vision.py`)
+**Screenshot capture and analysis**
+- Captures screen with pyautogui
+- Analyzes with Gemini Vision API
+- Saves to vault with image embedding
+
+### 💭 Subconscious (`lab_subconscious.py`)
+**Autonomous background processing**
+- **CuriosityEngine**: Random thought generation
+- **Librarian**: File organization proposals  
+- **SelfReflection**: Memory log analysis
+- **Consolidation**: Extracts concepts from yesterday's logs
+
+### 🤖 Hybrid LLM (`agents/hybrid_llm.py`)
+**Intelligent model routing**
+- Simple tasks → Ollama (local, free, fast)
+- Complex tasks → Gemini (cloud, smart)
+- Automatic complexity classification
+
+### 🔌 Plugin Loader (`agents/plugin_loader.py`)
+**Extensible skill system**
+- Dynamic loading from `plugins/` directory
+- Trigger-based execution
+- Hot-reload support
+
+### 🛡️ Safety Core (`lab_safety.py`)
 - Detects system idle time
 - Recognizes time of day (morning, afternoon, night)
 - Monitors battery status
 - Tracks active applications
 
-### 3. Subconscious (`lab_subconscious.py`)
 **Curiosity Engine** - Generates philosophical thoughts (+10 XP)
 **Librarian** - Proposes file organization (+5 XP)
 **Self-Reflection** - Analyzes past behavior (+15 XP)

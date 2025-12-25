@@ -78,23 +78,31 @@ class RileyConsciousness(QThread):
             time.sleep(1) # Heartbeat
 
     def dream_cycle(self):
-        """The Subconscious logic with error handling"""
+        """
+        The Subconscious logic with error handling.
+        During dreams, we prefer LOCAL LLM to save API costs.
+        """
         dice = random.random()
         
         try:
+            # Dream mode = LOCAL FIRST (user is away, save tokens!)
+            llm_mode = "simple"  # Force local Ollama during dreams
+            
             if dice < 0.3 and self.safety.track_usage("gemini-flash", 500):
                 proposal = self.librarian.check_for_mess("test_messy_folder")
                 if proposal: 
                     self.soul.grant_xp(5, "Librarian")
                     
             elif dice < 0.5 and self.safety.track_usage("gemini-flash", 1000):
+                # Reflection can use local model for simple analysis
                 insight = self.reflection.reflect_on_day()
                 if insight: 
                     self.soul.grant_xp(15, "Reflection")
 
             else:
-                if self.safety.track_usage("gemini-flash", 300):
-                    thought = self.subconscious.ponder()
+                # Curiosity during dreams = local LLM (free!)
+                if self.safety.track_usage("local-llm", 0):  # Zero cost for local
+                    thought = self.subconscious.ponder(mode="simple")  # Force local
                     if thought: 
                         self.soul.grant_xp(10, "Curiosity")
         except Exception as e:
