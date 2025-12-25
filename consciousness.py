@@ -52,8 +52,8 @@ class RileyConsciousness(QThread):
             phase = self.senses.get_time_phase()
             
             # 2. STATE MACHINE
-            # TEST MODE: 10 seconds idle triggers dream. (Change to 300 for production)
-            if idle_time > 10: 
+            # Check if dreaming is allowed
+            if self.check_dream_conditions(idle_time, phase):
                 if self.state != "DREAMING":
                     self.state = "DREAMING"
                     self.signal_dream_start.emit() # <--- FIRE SIGNAL
@@ -101,6 +101,34 @@ class RileyConsciousness(QThread):
             # Log API errors but don't crash
             self.signal_log_update.emit(f"⚠️ Dream interrupted: {str(e)[:50]}")
 
+    def check_dream_conditions(self, idle_time, phase):
+        """
+        Smart dream trigger logic - checks multiple conditions.
+        
+        Returns True if Riley should enter dream mode.
+        """
+        # 1. Idle time check (TEST: 10s, PRODUCTION: 300s)
+        if idle_time < 10:
+            return False
+        
+        # 2. CPU usage check (don't dream during high load)
+        try:
+            cpu_usage = self.senses.get_cpu_usage()
+            if cpu_usage > 60:
+                return False
+        except AttributeError:
+            pass  # Sensor doesn't support CPU check
+        
+        # 3. Active window blocklist
+        try:
+            active_window = self.senses.get_active_window()
+            blocklist = ["Code", "VSCode", "Visual Studio", "Game", "Steam", "Epic"]
+            if any(blocked in active_window for blocked in blocklist):
+                return False
+        except AttributeError:
+            pass  # Sensor doesn't support window detection
+        
+        return True
 
     def trigger_morning_briefing(self):
         """Generate morning briefing when waking up"""

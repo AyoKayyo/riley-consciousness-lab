@@ -110,6 +110,75 @@ class SelfReflection:
         self.memory.log_episode("REFLECTION", insight)
         return insight
 
+def consolidate_memories(memory_system):
+    """
+    Long-term memory consolidation - reads yesterday's log and extracts key concepts.
+    This is Riley's "deep sleep" processing.
+    
+    Args:
+        memory_system: ObsidianBrain instance
+    """
+    from datetime import datetime, timedelta
+    import google.generativeai as genai
+    import os
+    
+    print("🧠 [Consolidation] Analyzing yesterday's memories...")
+    
+    try:
+        # Get yesterday's date
+        yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+        log_file = memory_system.logs_path / f"{yesterday}.md"
+        
+        if not log_file.exists():
+            print("⚠️ [Consolidation] No log from yesterday")
+            return
+        
+        # Read the log
+        with open(log_file, 'r', encoding='utf-8') as f:
+            log_content = f.read()
+        
+        # Use Gemini to extract concepts
+        api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+        if not api_key:
+            print("⚠️ [Consolidation] No API key for analysis")
+            return
+        
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        
+        prompt = f"""Analyze this daily log and extract 3 key concepts or learnings worth remembering long-term.
+        
+Log:
+{log_content}
+
+For each concept, provide:
+1. Concept name (2-4 words)
+2. Brief description (1-2 sentences)
+
+Format as:
+CONCEPT: [name]
+DESCRIPTION: [description]
+---"""
+        
+        response = model.generate_content(prompt)
+        analysis = response.text
+        
+        # Parse and save concepts
+        concepts_saved = 0
+        for block in analysis.split("---"):
+            if "CONCEPT:" in block and "DESCRIPTION:" in block:
+                concept_name = block.split("CONCEPT:")[1].split("DESCRIPTION:")[0].strip()
+                description = block.split("DESCRIPTION:")[1].strip()
+                
+                memory_system.learn(concept_name, description, related_links=["Consolidation", yesterday])
+                concepts_saved += 1
+        
+        print(f"✅ [Consolidation] Saved {concepts_saved} long-term concepts")
+        
+    except Exception as e:
+        print(f"⚠️ [Consolidation] Error: {e}")
+
+
 if __name__ == "__main__":
     # Test Mock
     class MockMem:
